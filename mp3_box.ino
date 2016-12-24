@@ -16,15 +16,18 @@
 #include <MFRC522.h>
 
 /* Установка UIDa */
-#define NEW_UID {0xDE, 0xAD, 0xBE, 0xEF}
+
 #define SS_PIN 10
 #define RST_PIN 9
+#define LED 13
 
-const int LED = 13;
+
 const int CARD_DELAY = 500;
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);        // Назначение пинов считывателя.
-MFRC522::MIFARE_Key key;
+//MFRC522::MIFARE_Key key;
+
+unsigned long uidDec, uidDecTemp;
 
 void setup() {
         Serial.begin(9600);        // Инициализация последнего обмена данными с ПК
@@ -33,29 +36,48 @@ void setup() {
         mfrc522.PCD_Init();        // Инициализация считывателя
         Serial.println(F("Wait card: "));
         
-        // Установка ключа в FFFFFFFFFFFFh заводского номера.
-        for (byte i = 0; i < 6; i++) {
-                key.keyByte[i] = 0xFF;
-        }
+        pinMode(LED, OUTPUT);
+
 }
 
 void loop() {
-  
         // Просмотр карты, если приложена запомнить
         if ( ! mfrc522.PICC_IsNewCardPresent() || ! mfrc522.PICC_ReadCardSerial() ) {
             delay(50);
             return;
         }
+        uidDec = 0;
         
         // Выбор карты: UID
         
-        // Dump UID
-        Serial.print(F("Card UID:"));
-        for (byte i = 0; i < mfrc522.uid.size; i++) {
-                Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
-                Serial.print(mfrc522.uid.uidByte[i], HEX);
-        } 
-        Serial.println();
+       for (byte i = 0; i < mfrc522.uid.size; i++)
+        {
+         uidDecTemp = mfrc522.uid.uidByte[i];
+         uidDec = uidDec * 256 + uidDecTemp;
+         }
+  Serial.println("Card UID: ");
+  Serial.println(uidDec); // Выводим UID метки в консоль.
+  if (uidDec == 429208694) // Сравниваем Uid метки, если он равен заданому то серва открывает.
+  {
+    digitalWrite(LED, HIGH);
+    Serial.println("Super!");
+    delay(500);
+    digitalWrite(LED, LOW);
+  }
+  else if (uidDec == 1100222070) // Сравниваем Uid метки, если он равен заданому то серва открывает.
+  {
+    digitalWrite(LED, HIGH);
+    Serial.println("Neploho!");
+    delay(500);
+    digitalWrite(LED, LOW);
+  }
+  else if (uidDec == 3239272822) // Сравниваем Uid метки, если он равен заданому то серва открывает.
+  {
+    digitalWrite(LED, HIGH);
+    Serial.println("Otlichno!");
+    delay(500);
+    digitalWrite(LED, LOW);
+  }
        
         delay(CARD_DELAY);
 }
