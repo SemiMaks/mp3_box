@@ -15,18 +15,13 @@
 #include <SPI.h>
 #include <MFRC522.h>
 
-/* Установка UIDa */
-
 #define SS_PIN 10
 #define RST_PIN 9
 #define LED 13
 
+MFRC522 mfrc522(SS_PIN, RST_PIN);        // Назначение пинов считывателя.
 
 const int CARD_DELAY = 500;
-
-MFRC522 mfrc522(SS_PIN, RST_PIN);        // Назначение пинов считывателя.
-//MFRC522::MIFARE_Key key;
-
 unsigned long uidDec, uidDecTemp;
 
 void setup() {
@@ -50,34 +45,26 @@ void loop() {
         
         // Выбор карты: UID
         
-       for (byte i = 0; i < mfrc522.uid.size; i++)
-        {
+        for (byte i = 0; i < mfrc522.uid.size; i++)
+         {
          uidDecTemp = mfrc522.uid.uidByte[i];
          uidDec = uidDec * 256 + uidDecTemp;
          }
   Serial.println("Card UID: ");
   Serial.println(uidDec); // Выводим UID метки в консоль.
-  if (uidDec == 429208694) // Сравниваем Uid метки, если он равен заданому то серва открывает.
+  
+  if (uidDec == 429208694) // Сравниваем Uid метки, если он равен заданому - включаем музыку.
   {
-    digitalWrite(LED, HIGH);
     Serial.println("Super!");
-    delay(500);
-    digitalWrite(LED, LOW);
   }
-  else if (uidDec == 1100222070) // Сравниваем Uid метки, если он равен заданому то серва открывает.
+  else if (uidDec == 1100222070) // Сравниваем Uid метки, если он равен заданому - включаем музыку.
   {
-    digitalWrite(LED, HIGH);
     Serial.println("Neploho!");
-    delay(500);
-    digitalWrite(LED, LOW);
   }
-  else if (uidDec == 3239272822) // Сравниваем Uid метки, если он равен заданому то серва открывает.
+  else if (uidDec == 3239272822) // Сравниваем Uid метки, если он равен заданому - включаем музыку.
   {
-    digitalWrite(LED, HIGH);
     Serial.println("Otlichno!");
-    delay(500);
-    digitalWrite(LED, LOW);
   }
        
-        delay(CARD_DELAY);
+    delay(CARD_DELAY);
 }
