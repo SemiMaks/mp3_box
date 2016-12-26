@@ -86,4 +86,5 @@ void loop() {
          }
        
  delay(card_delay);
+ 
 }
