@@ -1,3 +1,5 @@
+#include <MFRC522.h>
+
 #include <Wtv020sd16p.h>
 
 /*
@@ -71,18 +73,27 @@ void loop() {
          Serial.println("Card UID: ");
          Serial.println(uidDec); // Выводим UID метки в консоль.
   
-         if (uidDec == 429208694) // Сравниваем Uid метки, если он равен заданому - включаем музыку.
+         if (uidDec == 429208694) // Сравниваем Uid метки, если он равен заданному - включаем музыку.
          {
-         Serial.println("Super!");
+         Serial.println("Track 1");
+         wtv020sd16p.playVoice(0);
          delay(wait_card);
          }
           else if (uidDec == 1100222070) // Сравниваем Uid метки, если он равен заданому - включаем музыку.
          {
-         Serial.println("Neploho!");
+         Serial.println("Track 2");
+         wtv020sd16p.playVoice(1);
+         delay(wait_card);
          }
          else if (uidDec == 3239272822) // Сравниваем Uid метки, если он равен заданому - включаем музыку.
          {
-         Serial.println("Otlichno!");
+         Serial.println("Track 3");
+         wtv020sd16p.playVoice(2);
+         delay(wait_card);
+         }
+         else
+         {
+         Serial.println("UID ne naznachen");
          }
        
  delay(card_delay);
